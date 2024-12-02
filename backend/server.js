@@ -7,9 +7,12 @@ import postRoute from './routes/post.routes.js'
 import notificationRoute from './routes/notification.routes.js'
 import connectToMongoDB from './db/connetMongoDB.js'
 import cookieParser from 'cookie-parser'
+import path from 'path'
 // import path from 'path'
 import { v2 as cloudinary } from "cloudinary";
 dotenv.config();
+const __dirname = path.resolve();
+
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -29,14 +32,12 @@ app.use("/api/users",userRoute);
 app.use("/api/posts",postRoute);
 app.use("/api/notifications",notificationRoute);
 
-// if (process.env.NODE_ENV === "production") {
-// 	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+app.use(express.static(path.join(__dirname,"/frontend/dist")))
 
-// 	app.get("*", (req, res) => {
-// 		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
-// 	});
-// }
-// console.log(__dirname)
+app.get("*",(req,res)=>{
+    res.sendFile(path.join(__dirname,"frontend","dist","index.html"))
+})
+
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);
     connectToMongoDB();
